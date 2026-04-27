@@ -145,7 +145,7 @@ npm --prefix cli pack --dry-run
 
 ## Release
 
-- Current release version: `0.3.0`.
+- Current release version: `0.3.1`.
 - Tag format: `v*` (example: `v0.3.0`).
 - CI release workflow file: `.github/workflows/release.yml`.
 - npm publish requires repository secret `NPM_TOKEN`.

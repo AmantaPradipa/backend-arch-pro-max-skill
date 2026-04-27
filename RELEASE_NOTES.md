@@ -2,15 +2,16 @@
 
 ## Version
 
-- Release: `0.3.0`
+- Release: `0.3.1`
 - Date: `2026-04-27`
-- Tag: `v0.3.0`
+- Tag: `v0.3.1`
 
 ## Highlights
 
 - Dataset expanded with additional framework stack rules.
 - CLI package is now npm-ready as `backend-arch-pro-max-cli`.
 - Installer templates are now generated from one source-of-truth file.
+- Added Antigravity installer support (`--ai antigravity`) and template output.
 - Automated release workflow added for validation, packaging, npm publishing, and GitHub Release publishing.
 
 ## Dataset Updates
@@ -45,7 +46,7 @@ npx backend-arch-pro-max-cli init --ai codex
 
 - Added source file: `templates/platforms/source.json`.
 - Added generator: `scripts/generate_platform_templates.py`.
-- Platform templates (`codex`, `claude`, `cursor`, `windsurf`) are generated and validated from this source.
+- Platform templates (`codex`, `claude`, `cursor`, `windsurf`, `antigravity`) are generated and validated from this source.
 
 ## Release Workflow
 

@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.3.1 - 2026-04-27
+
+- Added Antigravity platform support for CLI installation (`--ai antigravity`).
+- Added generated template `templates/platforms/antigravity.json` from `templates/platforms/source.json`.
+- Updated installer documentation and platform metadata to include Antigravity.
+
 ## 0.3.0 - 2026-04-27
 
 - Added npm-ready packaging metadata for `backend-arch-pro-max-cli` and aligned versions to `0.3.0`.
