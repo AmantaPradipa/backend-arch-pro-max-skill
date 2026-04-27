@@ -11,6 +11,7 @@ npx backend-arch-pro-max-cli init --ai codex --target . --dry-run
 ```powershell
 node cli\bin\backend-arch-pro-max.js list
 node cli\bin\backend-arch-pro-max.js init --ai codex --target . --dry-run
+node cli\bin\backend-arch-pro-max.js init --ai antigravity --target . --dry-run
 node cli\bin\backend-arch-pro-max.js init --ai codex --target . --force
 ```
 

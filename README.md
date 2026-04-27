@@ -76,6 +76,7 @@ Install and run from npm:
 
 ```powershell
 npx backend-arch-pro-max-cli init --ai codex --target . --dry-run
+npx backend-arch-pro-max-cli init --ai antigravity --target . --dry-run
 ```
 
 List supported platforms:
@@ -96,7 +97,7 @@ Install into a project:
 node cli\bin\backend-arch-pro-max.js init --ai codex --target . --force
 ```
 
-Supported platform templates currently include Codex, Claude, Cursor, and Windsurf.
+Supported platform templates currently include Codex, Claude, Cursor, Windsurf, and Antigravity.
 
 ## Platform Template Generator
 

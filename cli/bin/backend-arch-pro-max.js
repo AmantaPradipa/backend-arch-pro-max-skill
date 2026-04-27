@@ -7,7 +7,12 @@ const path = require("path");
 const CLI_ROOT = path.resolve(__dirname, "..");
 const REPO_ROOT = path.resolve(__dirname, "..", "..");
 const ASSET_ROOT = path.join(CLI_ROOT, "assets", "skill");
-const SOURCE_ROOT = fs.existsSync(path.join(ASSET_ROOT, "SKILL.md")) ? ASSET_ROOT : REPO_ROOT;
+const REPO_TEMPLATE_SOURCE = path.join(REPO_ROOT, "templates", "platforms", "source.json");
+const SOURCE_ROOT = fs.existsSync(REPO_TEMPLATE_SOURCE)
+  ? REPO_ROOT
+  : fs.existsSync(path.join(ASSET_ROOT, "SKILL.md"))
+    ? ASSET_ROOT
+    : REPO_ROOT;
 const TEMPLATE_DIR = path.join(SOURCE_ROOT, "templates", "platforms");
 
 const COPY_ENTRIES = [
