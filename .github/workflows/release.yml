@@ -1,0 +1,100 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  validate-test-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Validate skill metadata (quick_validate equivalent)
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path('.')
+          required = [
+              'SKILL.md',
+              'skill.json',
+              'scripts/search.py',
+              'src/backend-arch-pro-max/data/stacks.csv',
+              'templates/platforms/source.json',
+              'cli/package.json',
+              'RELEASE_NOTES.md'
+          ]
+          missing = [item for item in required if not (root / item).exists()]
+          if missing:
+              raise SystemExit('Missing required files: ' + ', '.join(missing))
+
+          skill = json.loads((root / 'skill.json').read_text(encoding='utf-8'))
+          cli = json.loads((root / 'cli/package.json').read_text(encoding='utf-8'))
+          if skill.get('version') != cli.get('version'):
+              raise SystemExit('Version mismatch between skill.json and cli/package.json')
+
+          print('Metadata validation passed.')
+          PY
+
+      - name: Validate CSV data
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python src/backend-arch-pro-max/data/_sync_all.py
+
+      - name: Run unit tests
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python -m unittest tests/test_search.py
+
+      - name: Check generated platform templates
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python scripts/generate_platform_templates.py --check
+
+      - name: Validate CLI syntax
+        run: node -c cli/bin/backend-arch-pro-max.js
+
+      - name: CLI smoke tests
+        run: |
+          node cli/bin/backend-arch-pro-max.js list
+          node cli/bin/backend-arch-pro-max.js init --ai codex --target . --dry-run
+
+      - name: Install npm metadata lockfile dependencies
+        working-directory: cli
+        run: npm install --package-lock-only
+
+      - name: Package dry run
+        working-directory: cli
+        run: npm pack --dry-run
+
+      - name: Publish npm package
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        working-directory: cli
+        run: npm publish
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: RELEASE_NOTES.md

@@ -1,0 +1,44 @@
+{
+  "name": "backend-arch-pro-max-cli",
+  "version": "0.3.0",
+  "description": "Dependency-free installer CLI for Backend Arch Pro Max skill",
+  "bin": {
+    "backend-arch-pro-max-cli": "./bin/backend-arch-pro-max.js",
+    "backend-arch-pro-max": "./bin/backend-arch-pro-max.js"
+  },
+  "files": [
+    "bin",
+    "assets",
+    "README.md"
+  ],
+  "scripts": {
+    "prepack": "node ./bin/prepare-assets.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AmantaPradipa/backend-arch-pro-max-skill.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AmantaPradipa/backend-arch-pro-max-skill/issues"
+  },
+  "homepage": "https://github.com/AmantaPradipa/backend-arch-pro-max-skill#readme",
+  "keywords": [
+    "backend",
+    "architecture",
+    "skill",
+    "codex",
+    "claude",
+    "cursor",
+    "windsurf",
+    "installer",
+    "cli"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "type": "commonjs"
+}

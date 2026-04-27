@@ -1,0 +1,23 @@
+# VCS and local metadata
+.git
+.gitignore
+.npmignore
+
+# Logs and caches
+*.log
+node_modules/
+
+# Local release artifacts
+*.tgz
+release-dry-run/
+
+# Local and CI output
+test-output/
+
+# Exclude copied non-package artifacts if present
+assets/skill/tests/
+assets/skill/test-output/
+assets/skill/examples/generated/
+assets/skill/Task.md
+assets/skill/Walkthrough.md
+assets/skill/Skills-Idea.md
