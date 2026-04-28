@@ -2,7 +2,7 @@
   "name": "backend-arch-pro-max",
   "displayName": "Backend Arch Pro Max",
   "description": "AI-powered backend architecture intelligence for APIs, databases, caching, async processing, resilience, security, observability, and production-grade service design.",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "author": "Agent-Skills",
   "license": "MIT",
   "keywords": [

@@ -1,9 +1,31 @@
 # Backend Arch Pro Max
-
+ 
+<p align="center">
+  <img src="https://img.shields.io/badge/architecture_rules-312-blue?style=for-the-badge" alt="312 Architecture Rules">
+  <img src="https://img.shields.io/badge/domains-9-purple?style=for-the-badge" alt="9 Domains">
+  <img src="https://img.shields.io/badge/python-3.x-yellow?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.x">
+  <img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" alt="License">
+</p>
+ 
 Backend Arch Pro Max is an AI coding-agent skill for backend architecture decisions, API design, database design, caching, async processing, resilience, security, observability, and anti-pattern review.
-
+ 
 It follows the same broad pattern as UI/UX Pro Max: searchable rules, a lightweight reasoning engine, structured recommendations, and a pre-delivery checklist.
-
+ 
+## Architecture Overview
+ 
+```mermaid
+graph TD
+    A[User Request] --> B{Reasoning Engine}
+    B --> C[Domain Search: API/DB/Security]
+    B --> D[Stack Search: NestJS/Go/Laravel]
+    B --> E[Anti-Pattern Filter]
+    C --> F[Structured Recommendation]
+    D --> F
+    E --> F
+    F --> G[ADR Persistence]
+    F --> H[Architecture Source of Truth]
+```
+ 
 ## What It Covers
 
 - API contracts: REST, GraphQL, gRPC, tRPC, pagination, versioning, webhooks, streaming, and error envelopes.
@@ -17,7 +39,7 @@ It follows the same broad pattern as UI/UX Pro Max: searchable rules, a lightwei
 
 ## Dataset
 
-Current dataset size: **302 rows**.
+Current dataset size: **312 rows**.
 
 | File | Rows |
 | --- | ---: |
@@ -28,8 +50,8 @@ Current dataset size: **302 rows**.
 | `security_patterns.csv` | 40 |
 | `async_patterns.csv` | 30 |
 | `observability_patterns.csv` | 25 |
-| `anti_patterns.csv` | 50 |
-| `stacks.csv` | 27 |
+| `anti_patterns.csv` | 55 |
+| `stacks.csv` | 32 |
 
 Validate the CSV files:
 
@@ -168,7 +190,7 @@ npm --prefix cli pack --dry-run
 
 ## Release
 
-- Current release version: `0.3.1`.
+- Current release version: `0.4.0`.
 - Tag format: `v*` (example: `v0.3.0`).
 - CI release workflow file: `.github/workflows/release.yml`.
 - npm publish requires repository secret `NPM_TOKEN`.

@@ -49,3 +49,8 @@ id,severity,name,bad_example,why_bad,good_example,keywords,references
 48,MEDIUM,Silent degraded mode,"fallback used for days with no alert",Users get stale or reduced results without operator awareness,"Emit metric and alert when fallback is active",fallback alert degraded mode,SRE Workbook
 49,MEDIUM,No clock tolerance for webhook,"reject all webhooks if server clock drifts",Valid events fail during clock skew,"Use NTP and a bounded timestamp tolerance",webhook timestamp clock skew,Stripe Webhooks
 50,HIGH,Raw exception in queue consumer,"consumer crashes and drops message after exception",Messages can be lost or retried without context,"Catch classify retry or DLQ with structured error context",queue exception dlq retry,Enterprise Integration Patterns
+51,HIGH,Leaky S3/Storage Bucket,Public write/read on sensitive bucket,Leaks user PII or allows malware injection,Use signed URLs and private-by-default buckets,s3 bucket leak pii storage,AWS Security
+52,MEDIUM,Missing TTL on Temp Data,Storing verification codes forever,Consumes storage and allows long-lived brute force,Set TTL or explicit delete after use,ttl redis temp data expiry,Redis
+53,HIGH,Circular DB Dependencies,Table A depends on B depends on A,Causes deadlocks and complex migration logic,Refactor into shared services or base tables,deadlock circular dependency database,PostgreSQL
+54,MEDIUM,Batch Memory Exhaustion,Loading 1M rows into memory for processing,Causes OOM and instability,Use cursor streams or small batches,oom batch memory stream,Node.js Streams
+55,HIGH,Unordered Message Processing,Processing user delete before create,Causes inconsistent state or errors,Use sequence IDs or ordered queues like Kafka partition keys,kafka order sequence message,Kafka
