@@ -2,6 +2,20 @@
 
 ## Version
 
+- Release: `0.4.0`
+- Date: `2026-04-28`
+- Tag: `v0.4.0`
+
+## Highlights
+
+- **Premium Documentation**: Added professional badges and an architectural Mermaid diagram to `README.md`.
+- **Expanded Dataset**: Increased total rule count to **312 rows** across 9 domains.
+- **New Framework Stacks**: Added implementation guidelines for `Rust (Rocket)`, `Java (Micronaut/Quarkus)`, `Python (Flask)`, and `Ruby (Sinatra)`.
+- **Critical Anti-patterns**: Added 5 new high-severity anti-patterns including `Leaky S3 Buckets` and `Circular DB Dependencies`.
+- **Development Guidance**: Introduced `CLAUDE.md` and a dedicated `docs/diagrams/` folder for better contributor onboarding.
+
+## Version
+
 - Release: `0.3.2`
 - Date: `2026-04-28`
 - Tag: `v0.3.2`
