@@ -88,6 +88,11 @@ STACK_CONFIG = {
     "actix": "stacks.csv",
     "axum": "stacks.csv",
     "ktor": "stacks.csv",
+    "rust-rocket": "stacks.csv",
+    "micronaut": "stacks.csv",
+    "quarkus": "stacks.csv",
+    "flask": "stacks.csv",
+    "sinatra": "stacks.csv",
 }
 
 
