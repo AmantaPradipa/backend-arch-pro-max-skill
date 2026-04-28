@@ -2,6 +2,18 @@
 
 ## Version
 
+- Release: `0.3.2`
+- Date: `2026-04-28`
+- Tag: `v0.3.2`
+
+## Highlights
+
+- **Standardized Folder Structure**: Aligned Antigravity root folder name with `uipro` (`.agent` instead of `.agents`) for seamless co-existence of skills.
+- **Improved Documentation**: Completely rewritten CLI Installer section in `README.md` with clearer instructions for both `npx` and local development.
+- **Installation Consistency**: Verified that all "Pro Max" skills now share the same `.agent/skills/` root for the Antigravity platform.
+
+## Version
+
 - Release: `0.3.1`
 - Date: `2026-04-27`
 - Tag: `v0.3.1`

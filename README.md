@@ -72,30 +72,53 @@ examples/generated/architecture/billing-api/services/webhook-worker.md
 
 ## CLI Installer
 
-Install and run from npm:
+You can install this skill into your project using our dedicated CLI. This will copy the necessary rule sets, agents, and search scripts into your project's hidden agent directory.
+
+### Option 1: Using npx (Fastest)
+
+If you just want to use the skill in your project, use `npx`. This will pull the latest version from npm:
 
 ```powershell
-npx backend-arch-pro-max-cli init --ai codex --target . --dry-run
+# Preview what will be installed
 npx backend-arch-pro-max-cli init --ai antigravity --target . --dry-run
+
+# Perform the actual installation
+npx backend-arch-pro-max-cli init --ai antigravity --target .
 ```
 
-List supported platforms:
+### Option 2: Using Local Repository (Development)
+
+If you have cloned this repository and want to install the skill from your local source code:
+
+1. Open your terminal in the root of **this** repository.
+2. Run the following command (replacing `<project-path>` with your target project):
 
 ```powershell
+# List all supported platforms (antigravity, claude, cursor, etc.)
 node cli\bin\backend-arch-pro-max.js list
+
+# Install to a specific project folder
+node cli\bin\backend-arch-pro-max.js init --ai antigravity --target "C:\path\to\your-project" --force
 ```
 
-Preview an install:
+### Arguments
 
-```powershell
-node cli\bin\backend-arch-pro-max.js init --ai codex --target . --dry-run
-```
+| Argument | Description |
+| --- | --- |
+| `--ai <platform>` | **Required.** The platform you are using (e.g., `antigravity`, `claude`, `cursor`, `windsurf`, `codex`). |
+| `--target <dir>` | The destination project directory. Defaults to current directory (`.`). |
+| `--dry-run` | Shows what files would be copied without actually doing it. |
+| `--force` | Overwrites existing files if the skill was already installed. |
 
-Install into a project:
+### Co-existence with UI/UX Pro Max
 
-```powershell
-node cli\bin\backend-arch-pro-max.js init --ai codex --target . --force
-```
+This skill is designed to live harmoniously with other "Pro Max" skills like **UI/UX Pro Max**. 
+
+- Both skills will be installed under the `.agent/skills/` directory (for Antigravity).
+- Your AI assistant will be able to search and utilize both rule sets simultaneously.
+- If you notice one tool uses `.agent` and another uses `.agents`, ensure you are using the latest version of `backend-arch-pro-max-cli` (v0.3.2+) which standardizes on `.agent` for Antigravity.
+
+---
 
 Supported platform templates currently include Codex, Claude, Cursor, Windsurf, and Antigravity.
 
