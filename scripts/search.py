@@ -69,6 +69,11 @@ CSV_CONFIG = {
         "search_cols": ["severity", "name", "bad_example", "why_bad", "good_example", "keywords"],
         "output_cols": ["severity", "name", "bad_example", "why_bad", "good_example", "references"],
     },
+    "integrations": {
+        "file": "integrations.csv",
+        "search_cols": ["category", "name", "description", "when_to_use", "trade_offs", "keywords"],
+        "output_cols": ["category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "references"],
+    },
 }
 
 STACK_CONFIG = {
@@ -180,6 +185,7 @@ def detect_domain(query):
         "async": ["queue", "kafka", "rabbitmq", "sqs", "worker", "webhook", "event", "idempotency", "email", "pdf"],
         "observability": ["log", "metrics", "trace", "slo", "monitor", "audit", "correlation", "observability"],
         "anti-patterns": ["anti", "bad", "review", "bug", "risk", "avoid", "smell"],
+        "integrations": ["stripe", "twilio", "auth0", "clerk", "integration", "webhook", "openai", "mcp", "algolia", "s3", "maps"],
     }
     scores = {
         domain: sum(1 for word in words if re.search(r"\b" + re.escape(word) + r"\b", query_lower))

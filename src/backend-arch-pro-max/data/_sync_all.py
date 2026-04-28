@@ -23,6 +23,7 @@ EXPECTED_COLUMNS = {
     "async_patterns.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references"],
     "observability_patterns.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references"],
     "anti_patterns.csv": ["id", "severity", "name", "bad_example", "why_bad", "good_example", "keywords", "references"],
+    "integrations.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references"],
     "stacks.csv": ["stack", "category", "guideline", "do", "dont", "notes", "keywords"],
 }
 

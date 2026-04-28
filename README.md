@@ -1,8 +1,8 @@
 # Backend Arch Pro Max
  
 <p align="center">
-  <img src="https://img.shields.io/badge/architecture_rules-312-blue?style=for-the-badge" alt="312 Architecture Rules">
-  <img src="https://img.shields.io/badge/domains-9-purple?style=for-the-badge" alt="9 Domains">
+  <img src="https://img.shields.io/badge/architecture_rules-333-blue?style=for-the-badge" alt="333 Architecture Rules">
+  <img src="https://img.shields.io/badge/domains-10-purple?style=for-the-badge" alt="10 Domains">
   <img src="https://img.shields.io/badge/python-3.x-yellow?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.x">
   <img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" alt="License">
 </p>
@@ -39,7 +39,7 @@ graph TD
 
 ## Dataset
 
-Current dataset size: **312 rows**.
+Current dataset size: **333 rows**.
 
 | File | Rows |
 | --- | ---: |
@@ -50,7 +50,8 @@ Current dataset size: **312 rows**.
 | `security_patterns.csv` | 40 |
 | `async_patterns.csv` | 30 |
 | `observability_patterns.csv` | 25 |
-| `anti_patterns.csv` | 55 |
+| `anti_patterns.csv` | 60 |
+| `integrations.csv` | 16 |
 | `stacks.csv` | 32 |
 
 Validate the CSV files:
@@ -190,7 +191,7 @@ npm --prefix cli pack --dry-run
 
 ## Release
 
-- Current release version: `0.4.0`.
+- Current release version: `0.5.0`.
 - Tag format: `v*` (example: `v0.3.0`).
 - CI release workflow file: `.github/workflows/release.yml`.
 - npm publish requires repository secret `NPM_TOKEN`.

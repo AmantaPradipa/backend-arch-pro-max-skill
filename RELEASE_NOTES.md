@@ -2,6 +2,20 @@
 
 ## Version
 
+- Release: `0.5.0`
+- Date: `2026-04-28`
+- Tag: `v0.5.0`
+
+## Highlights
+
+- **New Domain: Integrations**: Introduced a dedicated domain for external API integrations (Stripe, Twilio, OpenAI, Auth0, etc.).
+- **Dataset Expansion**: Total rule count increased to **333 rows**.
+- **Integration Resilience**: Added patterns for idempotency, HMAC verification, and external circuit breakers.
+- **AI/Agentic Readiness**: Added support for **Model Context Protocol (MCP)** tool definitions for AI agents.
+- **Improved Anti-patterns**: Added 5 new integration-specific anti-patterns (Infinite Webhook Loops, Unverified Identity, etc.).
+
+## Version
+
 - Release: `0.4.0`
 - Date: `2026-04-28`
 - Tag: `v0.4.0`
