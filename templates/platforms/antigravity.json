@@ -3,7 +3,7 @@
   "displayName": "Antigravity / Generic Agent",
   "installType": "full",
   "folderStructure": {
-    "root": ".agents",
+    "root": ".agent",
     "skillPath": "skills/backend-arch-pro-max",
     "filename": "SKILL.md"
   },
