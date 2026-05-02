@@ -2,6 +2,17 @@
  
 ## Version
  
+- Release: `0.7.0`
+- Date: `2026-05-02`
+- Tag: `v0.7.0`
+ 
+## Highlights
+ 
+- **Package Rename**: Renamed npm package to `backend-arch-pro-max` for shorter `npx` commands.
+- **Fixed Release Flow**: Updated NPM tokens for automated publishing.
+ 
+## Version
+ 
 - Release: `0.6.0`
 - Date: `2026-05-02`
 - Tag: `v0.6.0`
