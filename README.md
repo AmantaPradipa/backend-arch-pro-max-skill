@@ -102,7 +102,7 @@ This skill is designed to live harmoniously with other "Pro Max" skills like **U
 
 - Both skills will be installed under the `.agent/skills/` directory (for Antigravity).
 - Your AI assistant will be able to search and utilize both rule sets simultaneously.
-- If you notice one tool uses `.agent` and another uses `.agents`, ensure you are using the latest version of `backend-arch-pro-max-cli` (v0.3.2+) which standardizes on `.agent` for Antigravity.
+- If you notice one tool uses `.agent` and another uses `.agents`, ensure you are using the latest version of `backend-arch-pro-max-cli` (v0.1.0+) which standardizes on `.agent` for Antigravity.
 
 ---
 
@@ -153,9 +153,9 @@ npm --prefix cli pack --dry-run
 ```
 
 ## Release
-
-- Current release version: `0.5.0`.
-- Tag format: `v*` (example: `v0.3.0`).
+ 
+- Current release version: `0.1.0`.
+- Tag format: `v*` (example: `v0.1.0`).
 - CI release workflow file: `.github/workflows/release.yml`.
 - npm publish requires repository secret `NPM_TOKEN`.
 - GitHub Release notes are sourced from `RELEASE_NOTES.md`.
