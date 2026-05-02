@@ -1,7 +1,19 @@
 # Backend Arch Pro Max Release Notes
-
+ 
 ## Version
-
+ 
+- Release: `0.6.0`
+- Date: `2026-05-02`
+- Tag: `v0.6.0`
+ 
+## Highlights
+ 
+- **CLI Auto-Detection**: The CLI now automatically detects your AI platform (Cursor, Claude, Windsurf, Codex) based on your project structure.
+- **Search Forwarding**: You can now run the search engine directly via `npx backend-arch-pro-max search`.
+- **Public Release**: Repository transition to public availability.
+ 
+## Version
+ 
 - Release: `0.5.0`
 - Date: `2026-04-28`
 - Tag: `v0.5.0`

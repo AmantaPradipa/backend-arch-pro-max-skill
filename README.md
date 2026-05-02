@@ -61,76 +61,39 @@ python src\backend-arch-pro-max\data\_sync_all.py
 ```
 
 ## Usage
-
-Generate a full backend architecture recommendation:
-
-```powershell
-python scripts\search.py "multi tenant saas auth payment webhook postgres redis" --architecture -p "Multi Tenant SaaS"
+ 
+Search for patterns and generate architectures directly from the CLI:
+ 
+```bash
+# Generate architecture recommendation
+npx backend-arch-pro-max search "multi-tenant saas auth" --architecture
+ 
+# Search specific domains
+npx backend-arch-pro-max search "jwt refresh" --domain security
+npx backend-arch-pro-max search "redis cache aside" --domain caching
+ 
+# Filter by stack
+npx backend-arch-pro-max search "nestjs repository" --stack nestjs
 ```
-
-Search one domain:
-
-```powershell
-python scripts\search.py "jwt refresh token rbac tenant" --domain security -n 3
-```
-
-Search stack-specific guidance:
-
-```powershell
-python scripts\search.py "nestjs service repository transaction" --stack nestjs -n 3
-```
-
-Persist an architecture decision record:
-
-```powershell
-python scripts\search.py "billing webhook payments idempotency postgres queue" --architecture --persist -p "Billing API" --service "Webhook Worker" -o examples\generated
-```
-
-This creates:
-
-```text
-examples/generated/architecture/billing-api/MASTER.md
-examples/generated/architecture/billing-api/services/webhook-worker.md
-```
-
+ 
 ## CLI Installer
-
-You can install this skill into your project using our dedicated CLI. This will copy the necessary rule sets, agents, and search scripts into your project's hidden agent directory.
-
-### Option 1: Using npx (Fastest)
-
-If you just want to use the skill in your project, use `npx`. This will pull the latest version from npm:
-
-```powershell
-# Preview what will be installed
-npx backend-arch-pro-max-cli init --ai antigravity --target . --dry-run
-
-# Perform the actual installation
-npx backend-arch-pro-max-cli init --ai antigravity --target .
+ 
+Install the skill into your project directory:
+ 
+```bash
+# Auto-detects platform (Cursor, Claude, Windsurf, Codex)
+npx backend-arch-pro-max init
+ 
+# Or specify manually
+npx backend-arch-pro-max init --ai cursor
 ```
-
-### Option 2: Using Local Repository (Development)
-
-If you have cloned this repository and want to install the skill from your local source code:
-
-1. Open your terminal in the root of **this** repository.
-2. Run the following command (replacing `<project-path>` with your target project):
-
-```powershell
-# List all supported platforms (antigravity, claude, cursor, etc.)
-node cli\bin\backend-arch-pro-max.js list
-
-# Install to a specific project folder
-node cli\bin\backend-arch-pro-max.js init --ai antigravity --target "C:\path\to\your-project" --force
-```
-
-### Arguments
-
+ 
+### CLI Arguments
+ 
 | Argument | Description |
 | --- | --- |
-| `--ai <platform>` | **Required.** The platform you are using (e.g., `antigravity`, `claude`, `cursor`, `windsurf`, `codex`). |
+| `--ai <platform>` | The platform you are using (e.g., `claude`, `cursor`, `windsurf`, `codex`). Auto-detected if omitted. |
 | `--target <dir>` | The destination project directory. Defaults to current directory (`.`). |
-| `--dry-run` | Shows what files would be copied without actually doing it. |
 | `--force` | Overwrites existing files if the skill was already installed. |
 
 ### Co-existence with UI/UX Pro Max

@@ -1,6 +1,6 @@
 {
   "name": "backend-arch-pro-max-cli",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Dependency-free installer CLI for Backend Arch Pro Max skill",
   "bin": {
     "backend-arch-pro-max-cli": "./bin/backend-arch-pro-max.js",
