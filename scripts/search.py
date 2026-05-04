@@ -32,47 +32,47 @@ CSV_CONFIG = {
     "api": {
         "file": "api_patterns.csv",
         "search_cols": ["category", "name", "description", "when_to_use", "trade_offs", "keywords"],
-        "output_cols": ["category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "references"],
+        "output_cols": ["category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "references", "source_url", "source_type", "last_updated"],
     },
     "database": {
         "file": "database_patterns.csv",
         "search_cols": ["category", "name", "description", "when_to_use", "trade_offs", "keywords"],
-        "output_cols": ["category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "references"],
+        "output_cols": ["category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "references", "source_url", "source_type", "last_updated"],
     },
     "caching": {
         "file": "caching_strategies.csv",
         "search_cols": ["category", "name", "description", "when_to_use", "trade_offs", "keywords"],
-        "output_cols": ["category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "references"],
+        "output_cols": ["category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "references", "source_url", "source_type", "last_updated"],
     },
     "resilience": {
         "file": "resilience_patterns.csv",
         "search_cols": ["category", "name", "description", "when_to_use", "trade_offs", "keywords"],
-        "output_cols": ["category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "references"],
+        "output_cols": ["category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "references", "source_url", "source_type", "last_updated"],
     },
     "security": {
         "file": "security_patterns.csv",
         "search_cols": ["category", "name", "description", "when_to_use", "trade_offs", "keywords"],
-        "output_cols": ["category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "references"],
+        "output_cols": ["category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "references", "source_url", "source_type", "last_updated"],
     },
     "async": {
         "file": "async_patterns.csv",
         "search_cols": ["category", "name", "description", "when_to_use", "trade_offs", "keywords"],
-        "output_cols": ["category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "references"],
+        "output_cols": ["category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "references", "source_url", "source_type", "last_updated"],
     },
     "observability": {
         "file": "observability_patterns.csv",
         "search_cols": ["category", "name", "description", "when_to_use", "trade_offs", "keywords"],
-        "output_cols": ["category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "references"],
+        "output_cols": ["category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "references", "source_url", "source_type", "last_updated"],
     },
     "anti-patterns": {
         "file": "anti_patterns.csv",
         "search_cols": ["severity", "name", "bad_example", "why_bad", "good_example", "keywords"],
-        "output_cols": ["severity", "name", "bad_example", "why_bad", "good_example", "references"],
+        "output_cols": ["severity", "name", "bad_example", "why_bad", "good_example", "references", "source_url", "source_type", "last_updated"],
     },
     "integrations": {
         "file": "integrations.csv",
         "search_cols": ["category", "name", "description", "when_to_use", "trade_offs", "keywords"],
-        "output_cols": ["category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "references"],
+        "output_cols": ["category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "references", "source_url", "source_type", "last_updated"],
     },
 }
 
@@ -167,10 +167,21 @@ def search_csv(filepath, search_cols, output_cols, query, max_results, row_filte
     for index, score in ranked[:max_results]:
         if score > 0:
             row = rows[index]
-            results.append({col: row.get(col, "") for col in output_cols if col in row})
+            res = {col: row.get(col, "") for col in output_cols if col in row}
+            res["_score"] = round(score, 2)
+            if score > 5.0:
+                res["_confidence"] = "high"
+            elif score >= 2.0:
+                res["_confidence"] = "medium"
+            else:
+                res["_confidence"] = "low"
+            results.append(res)
     if not results and rows:
         for row in rows[:max_results]:
-            results.append({col: row.get(col, "") for col in output_cols if col in row})
+            res = {col: row.get(col, "") for col in output_cols if col in row}
+            res["_score"] = 0.0
+            res["_confidence"] = "none"
+            results.append(res)
     return results
 
 
@@ -213,7 +224,7 @@ def search(query, domain=None, max_results=MAX_RESULTS):
 def search_stack(query, stack, max_results=MAX_RESULTS):
     if stack not in STACK_CONFIG:
         return {"error": f"Unknown stack: {stack}. Available: {', '.join(STACK_CONFIG)}"}
-    output_cols = ["stack", "category", "guideline", "do", "dont", "notes"]
+    output_cols = ["stack", "category", "guideline", "do", "dont", "notes", "source_url", "source_type", "last_updated"]
     results = search_csv(
         DATA_DIR / STACK_CONFIG[stack],
         ["stack", "category", "guideline", "do", "dont", "keywords"],
@@ -236,7 +247,10 @@ def format_results(result):
         "",
     ]
     for index, row in enumerate(result.get("results", []), 1):
-        lines.append(f"### Result {index}")
+        score = row.pop("_score", None)
+        conf = row.pop("_confidence", None)
+        title_suffix = f" (Score: {score}, Confidence: {conf})" if score is not None else ""
+        lines.append(f"### Result {index}{title_suffix}")
         for key, value in row.items():
             value = str(value)
             if len(value) > 360:
@@ -399,7 +413,123 @@ def persist_architecture(query, project_name=None, service=None, output_dir=None
     return "\n".join(lines)
 
 
+
+def compare_items(query, domain=None):
+    terms = re.split(r"(?i)\s+vs\s+", query)
+    if len(terms) < 2:
+        return {"error": "Compare mode requires terms separated by ' vs ', e.g., 'RabbitMQ vs Kafka'"}
+    
+    domain = domain or detect_domain(query)
+    
+    comparisons = []
+    for term in terms:
+        res = search(term.strip(), domain, 1)
+        if res.get("results"):
+            comparisons.append(res["results"][0])
+        else:
+            comparisons.append({"name": term.strip(), "description": "Not found in domain."})
+    
+    keys = []
+    for comp in comparisons:
+        for k in comp.keys():
+            if k not in ["_score", "_confidence"] and k not in keys:
+                keys.append(k)
+                
+    lines = [f"## Compare: {' vs '.join(t.strip() for t in terms)}"]
+    
+    header = "| Feature | " + " | ".join(comp.get("name", "Unknown") for comp in comparisons) + " |"
+    lines.append(header)
+    dash_row = "|---|" + "|".join("---" for _ in comparisons) + "|"
+    lines.append(dash_row)
+    
+    for key in keys:
+        if key == "name":
+            continue
+        row_str = f"| **{key.replace('_', ' ').title()}** | "
+        cols = []
+        for comp in comparisons:
+            val = str(comp.get(key, "-")).replace("\n", " ").replace("|", ", ")
+            if len(val) > 150:
+                val = val[:147] + "..."
+            cols.append(val)
+        row_str += " | ".join(cols) + " |"
+        lines.append(row_str)
+        
+    return {"compare_markdown": "\n".join(lines)}
+
+
+def compare_items(query, domain=None):
+    terms = re.split(r"(?i)\s+vs\s+", query)
+    if len(terms) < 2:
+        return {"error": "Compare mode requires terms separated by ' vs ', e.g., 'RabbitMQ vs Kafka'"}
+    
+    domain = domain or detect_domain(query)
+    
+    comparisons = []
+    for term in terms:
+        res = search(term.strip(), domain, 1)
+        if res.get("results"):
+            comparisons.append(res["results"][0])
+        else:
+            comparisons.append({"name": term.strip(), "description": "Not found in domain."})
+    
+    keys = []
+    for comp in comparisons:
+        for k in comp.keys():
+            if k not in ["_score", "_confidence"] and k not in keys:
+                keys.append(k)
+                
+    lines = [f"## Compare: {' vs '.join(t.strip() for t in terms)}"]
+    
+    header = "| Feature | " + " | ".join(comp.get("name", "Unknown") for comp in comparisons) + " |"
+    lines.append(header)
+    dash_row = "|---|" + "|".join("---" for _ in comparisons) + "|"
+    lines.append(dash_row)
+    
+    for key in keys:
+        if key == "name":
+            continue
+        row_str = f"| **{key.replace('_', ' ').title()}** | "
+        cols = []
+        for comp in comparisons:
+            val = str(comp.get(key, "-")).replace("\n", " ").replace("|", ", ")
+            if len(val) > 150:
+                val = val[:147] + "..."
+            cols.append(val)
+        row_str += " | ".join(cols) + " |"
+        lines.append(row_str)
+        
+    return {"compare_markdown": "\n".join(lines)}
+
 def main():
+    if len(sys.argv) > 1 and sys.argv[1] == "compare":
+        parser = argparse.ArgumentParser(description="Compare Mode")
+        parser.add_argument("command", help="Command (compare)")
+        parser.add_argument("query", help="Compare query, e.g. 'RabbitMQ vs Kafka'")
+        parser.add_argument("--domain", "-d", choices=list(CSV_CONFIG.keys()), help="Search domain", default=None)
+        args = parser.parse_args()
+        
+        result = compare_items(args.query, args.domain)
+        if "error" in result:
+            print(f"Error: {result['error']}")
+        else:
+            print(result["compare_markdown"])
+        return
+
+    if len(sys.argv) > 1 and sys.argv[1] == "compare":
+        parser = argparse.ArgumentParser(description="Compare Mode")
+        parser.add_argument("command", help="Command (compare)")
+        parser.add_argument("query", help="Compare query, e.g. 'RabbitMQ vs Kafka'")
+        parser.add_argument("--domain", "-d", choices=list(CSV_CONFIG.keys()), help="Search domain", default=None)
+        args = parser.parse_args()
+        
+        result = compare_items(args.query, args.domain)
+        if "error" in result:
+            print(f"Error: {result['error']}")
+        else:
+            print(result["compare_markdown"])
+        return
+
     parser = argparse.ArgumentParser(description="Backend Arch Pro Max Search")
     parser.add_argument("query", help="Search query")
     parser.add_argument("--domain", "-d", choices=list(CSV_CONFIG.keys()), help="Search domain")
