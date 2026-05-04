@@ -414,6 +414,82 @@ def persist_architecture(query, project_name=None, service=None, output_dir=None
 
 
 
+
+def check_stale(domain=None, max_age_months=18):
+    domains = [domain] if domain else [k for k in CSV_CONFIG.keys() if k != "anti-patterns"]
+    if domain == "anti-patterns":
+        domains = ["anti-patterns"]
+    elif not domain:
+        domains.extend(["anti-patterns"])
+        
+    from datetime import datetime
+    now = datetime.now()
+    stale_results = []
+    
+    for d in domains:
+        if d not in CSV_CONFIG: continue
+        config = CSV_CONFIG[d]
+        filepath = DATA_DIR / config["file"]
+        if not filepath.exists(): continue
+        
+        rows = load_csv(filepath)
+        for i, row in enumerate(rows, 2):
+            last_updated = row.get("last_updated")
+            if not last_updated:
+                stale_results.append(f"- {config['file']}:{i} (No last_updated date) - {row.get('name', row.get('id', 'Unknown'))}")
+                continue
+                
+            try:
+                dt = datetime.strptime(last_updated, "%Y-%m-%d")
+                months_old = (now.year - dt.year) * 12 + now.month - dt.month
+                if months_old > max_age_months:
+                    stale_results.append(f"- {config['file']}:{i} ({months_old} months old, {last_updated}) - {row.get('name', row.get('id', 'Unknown'))}")
+            except ValueError:
+                stale_results.append(f"- {config['file']}:{i} (Invalid date format: {last_updated}) - {row.get('name', row.get('id', 'Unknown'))}")
+                
+    if not stale_results:
+        return "All records are fresh!"
+        
+    return f"## Stale Records (>{max_age_months} months)\n" + "\n".join(stale_results)
+
+
+def check_stale(domain=None, max_age_months=18):
+    domains = [domain] if domain else [k for k in CSV_CONFIG.keys() if k != "anti-patterns"]
+    if domain == "anti-patterns":
+        domains = ["anti-patterns"]
+    elif not domain:
+        domains.extend(["anti-patterns"])
+        
+    from datetime import datetime
+    now = datetime.now()
+    stale_results = []
+    
+    for d in domains:
+        if d not in CSV_CONFIG: continue
+        config = CSV_CONFIG[d]
+        filepath = DATA_DIR / config["file"]
+        if not filepath.exists(): continue
+        
+        rows = load_csv(filepath)
+        for i, row in enumerate(rows, 2):
+            last_updated = row.get("last_updated")
+            if not last_updated:
+                stale_results.append(f"- {config['file']}:{i} (No last_updated date) - {row.get('name', row.get('id', 'Unknown'))}")
+                continue
+                
+            try:
+                dt = datetime.strptime(last_updated, "%Y-%m-%d")
+                months_old = (now.year - dt.year) * 12 + now.month - dt.month
+                if months_old > max_age_months:
+                    stale_results.append(f"- {config['file']}:{i} ({months_old} months old, {last_updated}) - {row.get('name', row.get('id', 'Unknown'))}")
+            except ValueError:
+                stale_results.append(f"- {config['file']}:{i} (Invalid date format: {last_updated}) - {row.get('name', row.get('id', 'Unknown'))}")
+                
+    if not stale_results:
+        return "All records are fresh!"
+        
+    return f"## Stale Records (>{max_age_months} months)\n" + "\n".join(stale_results)
+
 def compare_items(query, domain=None):
     terms = re.split(r"(?i)\s+vs\s+", query)
     if len(terms) < 2:
@@ -457,6 +533,82 @@ def compare_items(query, domain=None):
         
     return {"compare_markdown": "\n".join(lines)}
 
+
+
+def check_stale(domain=None, max_age_months=18):
+    domains = [domain] if domain else [k for k in CSV_CONFIG.keys() if k != "anti-patterns"]
+    if domain == "anti-patterns":
+        domains = ["anti-patterns"]
+    elif not domain:
+        domains.extend(["anti-patterns"])
+        
+    from datetime import datetime
+    now = datetime.now()
+    stale_results = []
+    
+    for d in domains:
+        if d not in CSV_CONFIG: continue
+        config = CSV_CONFIG[d]
+        filepath = DATA_DIR / config["file"]
+        if not filepath.exists(): continue
+        
+        rows = load_csv(filepath)
+        for i, row in enumerate(rows, 2):
+            last_updated = row.get("last_updated")
+            if not last_updated:
+                stale_results.append(f"- {config['file']}:{i} (No last_updated date) - {row.get('name', row.get('id', 'Unknown'))}")
+                continue
+                
+            try:
+                dt = datetime.strptime(last_updated, "%Y-%m-%d")
+                months_old = (now.year - dt.year) * 12 + now.month - dt.month
+                if months_old > max_age_months:
+                    stale_results.append(f"- {config['file']}:{i} ({months_old} months old, {last_updated}) - {row.get('name', row.get('id', 'Unknown'))}")
+            except ValueError:
+                stale_results.append(f"- {config['file']}:{i} (Invalid date format: {last_updated}) - {row.get('name', row.get('id', 'Unknown'))}")
+                
+    if not stale_results:
+        return "All records are fresh!"
+        
+    return f"## Stale Records (>{max_age_months} months)\n" + "\n".join(stale_results)
+
+
+def check_stale(domain=None, max_age_months=18):
+    domains = [domain] if domain else [k for k in CSV_CONFIG.keys() if k != "anti-patterns"]
+    if domain == "anti-patterns":
+        domains = ["anti-patterns"]
+    elif not domain:
+        domains.extend(["anti-patterns"])
+        
+    from datetime import datetime
+    now = datetime.now()
+    stale_results = []
+    
+    for d in domains:
+        if d not in CSV_CONFIG: continue
+        config = CSV_CONFIG[d]
+        filepath = DATA_DIR / config["file"]
+        if not filepath.exists(): continue
+        
+        rows = load_csv(filepath)
+        for i, row in enumerate(rows, 2):
+            last_updated = row.get("last_updated")
+            if not last_updated:
+                stale_results.append(f"- {config['file']}:{i} (No last_updated date) - {row.get('name', row.get('id', 'Unknown'))}")
+                continue
+                
+            try:
+                dt = datetime.strptime(last_updated, "%Y-%m-%d")
+                months_old = (now.year - dt.year) * 12 + now.month - dt.month
+                if months_old > max_age_months:
+                    stale_results.append(f"- {config['file']}:{i} ({months_old} months old, {last_updated}) - {row.get('name', row.get('id', 'Unknown'))}")
+            except ValueError:
+                stale_results.append(f"- {config['file']}:{i} (Invalid date format: {last_updated}) - {row.get('name', row.get('id', 'Unknown'))}")
+                
+    if not stale_results:
+        return "All records are fresh!"
+        
+    return f"## Stale Records (>{max_age_months} months)\n" + "\n".join(stale_results)
 
 def compare_items(query, domain=None):
     terms = re.split(r"(?i)\s+vs\s+", query)
@@ -531,7 +683,7 @@ def main():
         return
 
     parser = argparse.ArgumentParser(description="Backend Arch Pro Max Search")
-    parser.add_argument("query", help="Search query")
+    parser.add_argument("query", nargs='?', default="", help="Search query")
     parser.add_argument("--domain", "-d", choices=list(CSV_CONFIG.keys()), help="Search domain")
     parser.add_argument("--stack", "-s", choices=list(STACK_CONFIG.keys()), help="Stack-specific search")
     parser.add_argument("--max-results", "-n", type=int, default=MAX_RESULTS, help="Max results")
@@ -541,8 +693,18 @@ def main():
     parser.add_argument("--service", default=None, help="Create service-specific override under architecture/<project>/services/")
     parser.add_argument("--output-dir", "-o", default=None, help="Output directory for persisted architecture files")
     parser.add_argument("--json", action="store_true", help="Output JSON")
+    parser.add_argument("--stale", action="store_true", help="Check for stale records")
+    parser.add_argument("--max-age-months", type=int, default=18, help="Threshold for stale check (months)")
     args = parser.parse_args()
 
+    if args.stale:
+        print(check_stale(args.domain, args.max_age_months))
+        return
+        
+    if args.stale:
+        print(check_stale(args.domain, args.max_age_months))
+        return
+        
     if args.architecture:
         if args.persist:
             print(persist_architecture(args.query, args.project_name, args.service, args.output_dir))

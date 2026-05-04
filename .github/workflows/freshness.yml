@@ -1,0 +1,33 @@
+﻿name: Freshness Audit
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # Every Sunday at midnight
+  workflow_dispatch:
+
+jobs:
+  audit-freshness:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Check freshness
+        run: |
+          python scripts/search.py --stale --max-age-months 18 > stale-report.md
+          if grep -q "## Stale Records" stale-report.md; then
+            echo "Stale records found. Printing report..."
+            cat stale-report.md
+            # Note: We do not fail the build to avoid breaking CI, just output the warning.
+          else
+            echo "All records are fresh."
+          fi
+
+      # Setup automatic PR or Issue generation for stale records here
+      # ...
