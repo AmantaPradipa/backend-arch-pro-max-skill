@@ -422,7 +422,6 @@ def check_stale(domain=None, max_age_months=18):
     elif not domain:
         domains.extend(["anti-patterns"])
         
-    from datetime import datetime
     now = datetime.now()
     stale_results = []
     
@@ -452,43 +451,6 @@ def check_stale(domain=None, max_age_months=18):
         
     return f"## Stale Records (>{max_age_months} months)\n" + "\n".join(stale_results)
 
-
-def check_stale(domain=None, max_age_months=18):
-    domains = [domain] if domain else [k for k in CSV_CONFIG.keys() if k != "anti-patterns"]
-    if domain == "anti-patterns":
-        domains = ["anti-patterns"]
-    elif not domain:
-        domains.extend(["anti-patterns"])
-        
-    from datetime import datetime
-    now = datetime.now()
-    stale_results = []
-    
-    for d in domains:
-        if d not in CSV_CONFIG: continue
-        config = CSV_CONFIG[d]
-        filepath = DATA_DIR / config["file"]
-        if not filepath.exists(): continue
-        
-        rows = load_csv(filepath)
-        for i, row in enumerate(rows, 2):
-            last_updated = row.get("last_updated")
-            if not last_updated:
-                stale_results.append(f"- {config['file']}:{i} (No last_updated date) - {row.get('name', row.get('id', 'Unknown'))}")
-                continue
-                
-            try:
-                dt = datetime.strptime(last_updated, "%Y-%m-%d")
-                months_old = (now.year - dt.year) * 12 + now.month - dt.month
-                if months_old > max_age_months:
-                    stale_results.append(f"- {config['file']}:{i} ({months_old} months old, {last_updated}) - {row.get('name', row.get('id', 'Unknown'))}")
-            except ValueError:
-                stale_results.append(f"- {config['file']}:{i} (Invalid date format: {last_updated}) - {row.get('name', row.get('id', 'Unknown'))}")
-                
-    if not stale_results:
-        return "All records are fresh!"
-        
-    return f"## Stale Records (>{max_age_months} months)\n" + "\n".join(stale_results)
 
 def compare_items(query, domain=None):
     terms = re.split(r"(?i)\s+vs\s+", query)
@@ -533,174 +495,66 @@ def compare_items(query, domain=None):
         
     return {"compare_markdown": "\n".join(lines)}
 
-
-
-def check_stale(domain=None, max_age_months=18):
-    domains = [domain] if domain else [k for k in CSV_CONFIG.keys() if k != "anti-patterns"]
-    if domain == "anti-patterns":
-        domains = ["anti-patterns"]
-    elif not domain:
-        domains.extend(["anti-patterns"])
-        
-    from datetime import datetime
-    now = datetime.now()
-    stale_results = []
-    
-    for d in domains:
-        if d not in CSV_CONFIG: continue
-        config = CSV_CONFIG[d]
-        filepath = DATA_DIR / config["file"]
-        if not filepath.exists(): continue
-        
-        rows = load_csv(filepath)
-        for i, row in enumerate(rows, 2):
-            last_updated = row.get("last_updated")
-            if not last_updated:
-                stale_results.append(f"- {config['file']}:{i} (No last_updated date) - {row.get('name', row.get('id', 'Unknown'))}")
-                continue
-                
-            try:
-                dt = datetime.strptime(last_updated, "%Y-%m-%d")
-                months_old = (now.year - dt.year) * 12 + now.month - dt.month
-                if months_old > max_age_months:
-                    stale_results.append(f"- {config['file']}:{i} ({months_old} months old, {last_updated}) - {row.get('name', row.get('id', 'Unknown'))}")
-            except ValueError:
-                stale_results.append(f"- {config['file']}:{i} (Invalid date format: {last_updated}) - {row.get('name', row.get('id', 'Unknown'))}")
-                
-    if not stale_results:
-        return "All records are fresh!"
-        
-    return f"## Stale Records (>{max_age_months} months)\n" + "\n".join(stale_results)
-
-
-def check_stale(domain=None, max_age_months=18):
-    domains = [domain] if domain else [k for k in CSV_CONFIG.keys() if k != "anti-patterns"]
-    if domain == "anti-patterns":
-        domains = ["anti-patterns"]
-    elif not domain:
-        domains.extend(["anti-patterns"])
-        
-    from datetime import datetime
-    now = datetime.now()
-    stale_results = []
-    
-    for d in domains:
-        if d not in CSV_CONFIG: continue
-        config = CSV_CONFIG[d]
-        filepath = DATA_DIR / config["file"]
-        if not filepath.exists(): continue
-        
-        rows = load_csv(filepath)
-        for i, row in enumerate(rows, 2):
-            last_updated = row.get("last_updated")
-            if not last_updated:
-                stale_results.append(f"- {config['file']}:{i} (No last_updated date) - {row.get('name', row.get('id', 'Unknown'))}")
-                continue
-                
-            try:
-                dt = datetime.strptime(last_updated, "%Y-%m-%d")
-                months_old = (now.year - dt.year) * 12 + now.month - dt.month
-                if months_old > max_age_months:
-                    stale_results.append(f"- {config['file']}:{i} ({months_old} months old, {last_updated}) - {row.get('name', row.get('id', 'Unknown'))}")
-            except ValueError:
-                stale_results.append(f"- {config['file']}:{i} (Invalid date format: {last_updated}) - {row.get('name', row.get('id', 'Unknown'))}")
-                
-    if not stale_results:
-        return "All records are fresh!"
-        
-    return f"## Stale Records (>{max_age_months} months)\n" + "\n".join(stale_results)
-
-def compare_items(query, domain=None):
-    terms = re.split(r"(?i)\s+vs\s+", query)
-    if len(terms) < 2:
-        return {"error": "Compare mode requires terms separated by ' vs ', e.g., 'RabbitMQ vs Kafka'"}
-    
-    domain = domain or detect_domain(query)
-    
-    comparisons = []
-    for term in terms:
-        res = search(term.strip(), domain, 1)
-        if res.get("results"):
-            comparisons.append(res["results"][0])
-        else:
-            comparisons.append({"name": term.strip(), "description": "Not found in domain."})
-    
-    keys = []
-    for comp in comparisons:
-        for k in comp.keys():
-            if k not in ["_score", "_confidence"] and k not in keys:
-                keys.append(k)
-                
-    lines = [f"## Compare: {' vs '.join(t.strip() for t in terms)}"]
-    
-    header = "| Feature | " + " | ".join(comp.get("name", "Unknown") for comp in comparisons) + " |"
-    lines.append(header)
-    dash_row = "|---|" + "|".join("---" for _ in comparisons) + "|"
-    lines.append(dash_row)
-    
-    for key in keys:
-        if key == "name":
-            continue
-        row_str = f"| **{key.replace('_', ' ').title()}** | "
-        cols = []
-        for comp in comparisons:
-            val = str(comp.get(key, "-")).replace("\n", " ").replace("|", ", ")
-            if len(val) > 150:
-                val = val[:147] + "..."
-            cols.append(val)
-        row_str += " | ".join(cols) + " |"
-        lines.append(row_str)
-        
-    return {"compare_markdown": "\n".join(lines)}
 
 def main():
-    if len(sys.argv) > 1 and sys.argv[1] == "compare":
-        parser = argparse.ArgumentParser(description="Compare Mode")
-        parser.add_argument("command", help="Command (compare)")
-        parser.add_argument("query", help="Compare query, e.g. 'RabbitMQ vs Kafka'")
-        parser.add_argument("--domain", "-d", choices=list(CSV_CONFIG.keys()), help="Search domain", default=None)
-        args = parser.parse_args()
-        
-        result = compare_items(args.query, args.domain)
-        if "error" in result:
-            print(f"Error: {result['error']}")
-        else:
-            print(result["compare_markdown"])
-        return
-
-    if len(sys.argv) > 1 and sys.argv[1] == "compare":
-        parser = argparse.ArgumentParser(description="Compare Mode")
-        parser.add_argument("command", help="Command (compare)")
-        parser.add_argument("query", help="Compare query, e.g. 'RabbitMQ vs Kafka'")
-        parser.add_argument("--domain", "-d", choices=list(CSV_CONFIG.keys()), help="Search domain", default=None)
-        args = parser.parse_args()
-        
-        result = compare_items(args.query, args.domain)
-        if "error" in result:
-            print(f"Error: {result['error']}")
-        else:
-            print(result["compare_markdown"])
-        return
-
     parser = argparse.ArgumentParser(description="Backend Arch Pro Max Search")
-    parser.add_argument("query", nargs='?', default="", help="Search query")
-    parser.add_argument("--domain", "-d", choices=list(CSV_CONFIG.keys()), help="Search domain")
-    parser.add_argument("--stack", "-s", choices=list(STACK_CONFIG.keys()), help="Stack-specific search")
-    parser.add_argument("--max-results", "-n", type=int, default=MAX_RESULTS, help="Max results")
-    parser.add_argument("--architecture", "-a", action="store_true", help="Generate full backend architecture recommendation")
-    parser.add_argument("--project-name", "-p", default=None, help="Project name")
-    parser.add_argument("--persist", action="store_true", help="Save architecture to architecture/<project>/MASTER.md")
-    parser.add_argument("--service", default=None, help="Create service-specific override under architecture/<project>/services/")
-    parser.add_argument("--output-dir", "-o", default=None, help="Output directory for persisted architecture files")
-    parser.add_argument("--json", action="store_true", help="Output JSON")
-    parser.add_argument("--stale", action="store_true", help="Check for stale records")
-    parser.add_argument("--max-age-months", type=int, default=18, help="Threshold for stale check (months)")
+    subparsers = parser.add_subparsers(dest="subcommand")
+
+    # Search (default)
+    search_parser = subparsers.add_parser("search", help="Search for backend patterns")
+    search_parser.add_argument("query", nargs='?', default="", help="Search query")
+    search_parser.add_argument("--domain", "-d", choices=list(CSV_CONFIG.keys()), help="Search domain")
+    search_parser.add_argument("--stack", "-s", choices=list(STACK_CONFIG.keys()), help="Stack-specific search")
+    search_parser.add_argument("--max-results", "-n", type=int, default=MAX_RESULTS, help="Max results")
+    search_parser.add_argument("--architecture", "-a", action="store_true", help="Generate full backend architecture recommendation")
+    search_parser.add_argument("--project-name", "-p", default=None, help="Project name")
+    search_parser.add_argument("--persist", action="store_true", help="Save architecture to architecture/<project>/MASTER.md")
+    search_parser.add_argument("--service", default=None, help="Create service-specific override under architecture/<project>/services/")
+    search_parser.add_argument("--output-dir", "-o", default=None, help="Output directory for persisted architecture files")
+    search_parser.add_argument("--json", action="store_true", help="Output JSON")
+    search_parser.add_argument("--stale", action="store_true", help="Check for stale records")
+    search_parser.add_argument("--max-age-months", type=int, default=18, help="Threshold for stale check (months)")
+
+    # Compare
+    compare_parser = subparsers.add_parser("compare", help="Compare two patterns")
+    compare_parser.add_argument("query", help="Compare query, e.g. 'RabbitMQ vs Kafka'")
+    compare_parser.add_argument("--domain", "-d", choices=list(CSV_CONFIG.keys()), help="Search domain", default=None)
+    compare_parser.add_argument("--json", action="store_true", help="Output JSON")
+
+    # Stale (separate command for convenience)
+    stale_parser = subparsers.add_parser("stale", help="Check for stale records")
+    stale_parser.add_argument("--domain", "-d", choices=list(CSV_CONFIG.keys()), help="Search domain")
+    stale_parser.add_argument("--max-age-months", type=int, default=18, help="Threshold for stale check (months)")
+
+    # Handle legacy top-level search if no subcommand provided
+    if len(sys.argv) > 1 and sys.argv[1] not in ["search", "compare", "stale", "-h", "--help"]:
+        # Insert 'search' as the first argument if it's a positional argument
+        if not sys.argv[1].startswith("-"):
+            sys.argv.insert(1, "search")
+        else:
+            # It's a flag, but no subcommand. Let's assume search.
+            sys.argv.insert(1, "search")
+    elif len(sys.argv) == 1:
+        sys.argv.append("search")
+
     args = parser.parse_args()
 
-    if args.stale:
+    if args.subcommand == "stale":
         print(check_stale(args.domain, args.max_age_months))
         return
-        
+
+    if args.subcommand == "compare":
+        result = compare_items(args.query, args.domain)
+        if "error" in result:
+            print(f"Error: {result['error']}")
+        elif args.json:
+            import json
+            print(json.dumps(result, indent=2, ensure_ascii=False))
+        else:
+            print(result["compare_markdown"])
+        return
+
+    # Default to search
     if args.stale:
         print(check_stale(args.domain, args.max_age_months))
         return
@@ -711,13 +565,14 @@ def main():
         else:
             print(generate_architecture(args.query, args.project_name))
         return
+        
     if args.stack:
         result = search_stack(args.query, args.stack, args.max_results)
     else:
         result = search(args.query, args.domain, args.max_results)
+        
     if args.json:
         import json
-
         print(json.dumps(result, indent=2, ensure_ascii=False))
     else:
         print(format_results(result))

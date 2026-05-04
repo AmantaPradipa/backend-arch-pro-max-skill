@@ -35,11 +35,13 @@ This creates `architecture/<project>/MASTER.md` plus an optional `architecture/<
 3. Add focused searches when needed:
 
 ```bash
+python backend-arch-pro-max-skill/scripts/search.py compare "RabbitMQ vs Kafka"
 python backend-arch-pro-max-skill/scripts/search.py "cursor pagination REST" --domain api
 python backend-arch-pro-max-skill/scripts/search.py "multi tenant postgres row level security" --domain database
 python backend-arch-pro-max-skill/scripts/search.py "idempotent payment webhook" --domain async
 python backend-arch-pro-max-skill/scripts/search.py "jwt refresh token rbac" --domain security
 python backend-arch-pro-max-skill/scripts/search.py "nestjs service repository transaction" --stack nestjs
+python backend-arch-pro-max-skill/scripts/search.py --stale
 ```
 
 4. Implement with hard boundaries:
