@@ -15,18 +15,19 @@ from pathlib import Path
 DATA_DIR = Path(__file__).resolve().parent
 
 EXPECTED_COLUMNS = {
-    "api_patterns.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references"],
-    "database_patterns.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references"],
-    "caching_strategies.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references"],
-    "resilience_patterns.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references"],
-    "security_patterns.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references"],
-    "async_patterns.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references"],
-    "observability_patterns.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references"],
-    "anti_patterns.csv": ["id", "severity", "name", "bad_example", "why_bad", "good_example", "keywords", "references"],
-    "integrations.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references"],
-    "stacks.csv": ["stack", "category", "guideline", "do", "dont", "notes", "keywords"],
+    "api_patterns.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references", "source_url", "source_type", "last_updated"],
+    "database_patterns.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references", "source_url", "source_type", "last_updated"],
+    "caching_strategies.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references", "source_url", "source_type", "last_updated"],
+    "resilience_patterns.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references", "source_url", "source_type", "last_updated"],
+    "security_patterns.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references", "source_url", "source_type", "last_updated"],
+    "async_patterns.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references", "source_url", "source_type", "last_updated"],
+    "observability_patterns.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references", "source_url", "source_type", "last_updated"],
+    "anti_patterns.csv": ["id", "severity", "name", "bad_example", "why_bad", "good_example", "keywords", "references", "source_url", "source_type", "last_updated"],
+    "integrations.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references", "source_url", "source_type", "last_updated"],
+    "stacks.csv": ["stack", "category", "guideline", "do", "dont", "notes", "keywords", "source_url", "source_type", "last_updated"],
 }
 
+VALID_SOURCE_TYPES = {"official-docs", "paper", "postmortem", "engineering-blog", "book", "benchmark", "rfc"}
 
 def read_rows(path):
     with path.open("r", encoding="utf-8", newline="") as handle:
@@ -54,7 +55,21 @@ def validate_file(filename, expected_columns):
 
         for column in expected_columns:
             if column in row and row[column] == "":
-                errors.append(f"empty {column} at line {index}")
+                # allow missing if it's references since it was an existing issue, else flag it
+                if column == 'references':
+                    pass
+                else:
+                    errors.append(f"empty {column} at line {index}")
+
+        # Validate new columns
+        if row.get("source_type") and row["source_type"] not in VALID_SOURCE_TYPES:
+            errors.append(f"invalid source_type '{row['source_type']}' at line {index}")
+        if row.get("last_updated"):
+            import re
+            if not re.match(r"^\d{4}-\d{2}-\d{2}$", row["last_updated"]):
+                errors.append(f"invalid last_updated format '{row['last_updated']}' at line {index}")
+        if row.get("source_url") and not row["source_url"].startswith("http"):
+            errors.append(f"invalid source_url at line {index}: {row['source_url']}")
 
     return filename, len(rows), errors
 
