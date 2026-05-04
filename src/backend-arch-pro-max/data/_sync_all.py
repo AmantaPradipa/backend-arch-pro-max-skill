@@ -15,19 +15,20 @@ from pathlib import Path
 DATA_DIR = Path(__file__).resolve().parent
 
 EXPECTED_COLUMNS = {
-    "api_patterns.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references", "source_url", "source_type", "last_updated"],
-    "database_patterns.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references", "source_url", "source_type", "last_updated"],
-    "caching_strategies.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references", "source_url", "source_type", "last_updated"],
-    "resilience_patterns.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references", "source_url", "source_type", "last_updated"],
-    "security_patterns.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references", "source_url", "source_type", "last_updated"],
-    "async_patterns.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references", "source_url", "source_type", "last_updated"],
-    "observability_patterns.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references", "source_url", "source_type", "last_updated"],
-    "anti_patterns.csv": ["id", "severity", "name", "bad_example", "why_bad", "good_example", "keywords", "references", "source_url", "source_type", "last_updated"],
-    "integrations.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references", "source_url", "source_type", "last_updated"],
-    "stacks.csv": ["stack", "category", "guideline", "do", "dont", "notes", "keywords", "source_url", "source_type", "last_updated"],
+    "api_patterns.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references", "source_url", "source_type", "last_updated", "throughput_tier", "latency_tier", "cost_tier", "complexity_tier"],
+    "database_patterns.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references", "source_url", "source_type", "last_updated", "throughput_tier", "latency_tier", "cost_tier", "complexity_tier"],
+    "caching_strategies.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references", "source_url", "source_type", "last_updated", "throughput_tier", "latency_tier", "cost_tier", "complexity_tier"],
+    "resilience_patterns.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references", "source_url", "source_type", "last_updated", "throughput_tier", "latency_tier", "cost_tier", "complexity_tier"],
+    "security_patterns.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references", "source_url", "source_type", "last_updated", "throughput_tier", "latency_tier", "cost_tier", "complexity_tier"],
+    "async_patterns.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references", "source_url", "source_type", "last_updated", "throughput_tier", "latency_tier", "cost_tier", "complexity_tier"],
+    "observability_patterns.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references", "source_url", "source_type", "last_updated", "throughput_tier", "latency_tier", "cost_tier", "complexity_tier"],
+    "anti_patterns.csv": ["id", "severity", "name", "bad_example", "why_bad", "good_example", "keywords", "references", "source_url", "source_type", "last_updated", "throughput_tier", "latency_tier", "cost_tier", "complexity_tier"],
+    "integrations.csv": ["id", "category", "name", "description", "when_to_use", "trade_offs", "implementation_notes", "keywords", "references", "source_url", "source_type", "last_updated", "throughput_tier", "latency_tier", "cost_tier", "complexity_tier"],
+    "stacks.csv": ["stack", "category", "guideline", "do", "dont", "notes", "keywords", "source_url", "source_type", "last_updated", "throughput_tier", "latency_tier", "cost_tier", "complexity_tier"],
 }
 
 VALID_SOURCE_TYPES = {"official-docs", "paper", "postmortem", "engineering-blog", "book", "benchmark", "rfc"}
+VALID_TIERS = {"low", "medium", "high", "extreme", "any"}
 
 def read_rows(path):
     with path.open("r", encoding="utf-8", newline="") as handle:
@@ -70,6 +71,11 @@ def validate_file(filename, expected_columns):
                 errors.append(f"invalid last_updated format '{row['last_updated']}' at line {index}")
         if row.get("source_url") and not row["source_url"].startswith("http"):
             errors.append(f"invalid source_url at line {index}: {row['source_url']}")
+            
+        for tier_col in ["throughput_tier", "latency_tier", "cost_tier", "complexity_tier"]:
+            val = row.get(tier_col)
+            if val and val not in VALID_TIERS:
+                errors.append(f"invalid {tier_col} '{val}' at line {index}")
 
     return filename, len(rows), errors
 
